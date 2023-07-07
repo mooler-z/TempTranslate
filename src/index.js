@@ -18,6 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // * Routes * //
 
+app.use("/", (req, res, next) => res.status(200).json({ message: "WORKING" }))
 app.use('/translate', routes.translate);
 
 // * Start * //
