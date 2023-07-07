@@ -1,6 +1,5 @@
-import { Router } from 'express';
-import request from 'request';
-import axios from 'axios';
+let { Router } = require('express');
+let axios = require('axios');
 
 const router = Router();
 
@@ -24,4 +23,4 @@ router.post('/', async (req, res) => {
   })
 });
 
-export default router;
+module.exports = router;

@@ -1,9 +1,8 @@
 require('dotenv').config()
-import cors from 'cors';
-import express from 'express';
+let cors = require('cors');
+let express = require('express');
 
-import routes from './routes';
-
+let translate = require('./routes/translate')
 const app = express();
 
 // * Application-Level Middleware * //
@@ -19,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 // * Routes * //
 
 app.use("/", (req, res, next) => res.status(200).json({ message: "WORKING" }))
-app.use('/translate', routes.translate);
+app.use('/translate', translate);
 
 // * Start * //
 
