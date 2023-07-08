@@ -16,13 +16,24 @@ router.post('/', async (req, res) => {
   let response;
 
   if (src_lang === 'en') {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: text
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: 'user', content: text }]
     });
-    response = completion.data.choices[0].text;
+    let translate = await axios({
+      url: process.env.API_URL,
+      method: "POST",
+      data: {
+        key: process.env.API_KEY,
+        text: completion.data.choices[0].message.content,
+        src_lang: 'en',
+        tgt_lang: 'ti'
+      }
+    });
+
+    response = translate.data.tgt_text;
   }
-  else {
+  else if (src_lang === 'ti') {
     let translated = await axios({
       url: process.env.API_URL,
       method: "POST",
@@ -34,14 +45,23 @@ router.post('/', async (req, res) => {
       }
     });
     translated = translated.data.tgt_text;
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: translated
-    })
-    response = completion.data.choices[0].text;
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: 'user', content: translated }]
+    });
+    let translate = await axios({
+      url: process.env.API_URL,
+      method: "POST",
+      data: {
+        key: process.env.API_KEY,
+        text: completion.data.choices[0].message.content,
+        src_lang: 'en',
+        tgt_lang: 'ti'
+      }
+    });
+
+    response = translate.data.tgt_text;
   }
-
-
 
 
   return res.status(200).json({
