@@ -40,8 +40,8 @@ router.post('/', async (req, res) => {
       data: {
         key: process.env.API_KEY,
         text,
-        src_lang,
-        tgt_lang
+        src_lang: 'ti',
+        tgt_lang: 'en'
       }
     });
     translated = translated.data.tgt_text;
