@@ -36,30 +36,39 @@ async function translate(text, src_lang, tgt_lang) {
 }
 
 router.post('/', async (req, res) => {
-  let { text, src_lang, actAs } = req.body;
+  let { text, src_lang, actAs, res_lang } = req.body;
   let response;
 
   if (src_lang === 'en') {
     const gpt_response = await actAsX(text, actAs);
+    let _res;
 
-    let res = await translate(
-      gpt_response.data.choices[0].message.content,
-      'en',
-      'ti',
-    );
+    if (res_lang === 'ti') {
+      _res = await translate(
+        gpt_response.data.choices[0].message.content,
+        'en',
+        'ti',
+      );
+    } else {
+      _res = gpt_response.data.choices[0].message.content;
+    }
 
-    response = res.data.tgt_text;
+    response = _res.data.tgt_text;
   } else if (src_lang === 'ti') {
-    let res = await translate(text, 'ti', 'en');
-    res = res.data.tgt_text;
-    const gpt_response = await actAsX(res, actAs);
-    res = await translate(
-      gpt_response.data.choices[0].message.content,
-      'en',
-      'ti',
-    );
+    let _res = await translate(text, 'ti', 'en');
+    _res = _res.data.tgt_text;
+    const gpt_response = await actAsX(_res, actAs);
+    if (res_lang === 'ti') {
+      _res = await translate(
+        gpt_response.data.choices[0].message.content,
+        'en',
+        'ti',
+      );
+    } else {
+      _res = gpt_response.data.choices[0].message.content;
+    }
 
-    response = res.data.tgt_text;
+    response = _res.data.tgt_text;
   }
 
   return res.status(200).json({
