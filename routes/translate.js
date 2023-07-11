@@ -49,11 +49,12 @@ router.post('/', async (req, res) => {
         'en',
         'ti',
       );
+      _res = _res.data.tgt_text;
     } else {
       _res = gpt_response.data.choices[0].message.content;
     }
 
-    response = _res.data.tgt_text;
+    response = _res;
   } else if (src_lang === 'ti') {
     let _res = await translate(text, 'ti', 'en');
     _res = _res.data.tgt_text;
@@ -64,11 +65,12 @@ router.post('/', async (req, res) => {
         'en',
         'ti',
       );
+      _res = _res.data.tgt_text;
     } else {
       _res = gpt_response.data.choices[0].message.content;
     }
 
-    response = _res.data.tgt_text;
+    response = _res;
   }
 
   return res.status(200).json({
