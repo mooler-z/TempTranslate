@@ -1,8 +1,9 @@
-require('dotenv').config()
-let cors = require('cors');
-let express = require('express');
+require('dotenv').config();
+const cors = require('cors');
+const express = require('express');
 
-let translate = require('./routes/translate')
+const translate = require('./routes/translate');
+const question = require('./routes/question');
 const app = express();
 
 // * Application-Level Middleware * //
@@ -17,7 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // * Routes * //
 
-app.use("/", translate)
+app.use('/translate', translate);
+app.use('/question', question);
 
 // * Start * //
 

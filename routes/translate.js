@@ -1,39 +1,8 @@
 let { Router } = require('express');
-let axios = require('axios');
 
 const router = Router();
 
-const { Configuration, OpenAIApi } = require('openai');
-
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
-
-async function actAsX(text, act) {
-  act = act || 'yourself';
-  const content = `I want you to act like ${act} and tell me ${text}`;
-  const completion = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
-    messages: [{ role: 'user', content }],
-  });
-
-  return completion;
-}
-
-async function translate(text, src_lang, tgt_lang) {
-  let res = await axios({
-    url: process.env.API_URL,
-    method: 'POST',
-    data: {
-      key: process.env.API_KEY,
-      text,
-      src_lang,
-      tgt_lang,
-    },
-  });
-  return res;
-}
+const { actAsX, translate } = require('../utils/gpt');
 
 router.post('/', async (req, res) => {
   let { text, src_lang, actAs, res_lang } = req.body;
