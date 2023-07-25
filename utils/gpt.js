@@ -27,7 +27,6 @@ function teacher(grade, subject, about, hint, level) {
   return prompt;
 }
 
-
 exports.actAsX = async (text, act) => {
   act = act || "helpful assistant";
   const content = `I want you to act like ${act} and tell me ${text}`;
@@ -35,6 +34,22 @@ exports.actAsX = async (text, act) => {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content }],
+    });
+    return completion;
+  } catch (err) {
+    return err;
+  }
+};
+
+exports.englishTeacher = async (text) => {
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{
+        role: "system",
+        content:
+          "You are english language teacher that will correct user's grammar if there is any in 50 words or less",
+      }, { role: "user", content: text }],
     });
     return completion;
   } catch (err) {
