@@ -48,7 +48,7 @@ exports.englishTeacher = async (text) => {
       messages: [{
         role: "system",
         content:
-          "You are english language teacher that will correct user's grammar if there is any in 50 words or less",
+          "You are english language teacher that will check user input for grammar. If there is a grammar error, explain how the user made a mistake in 50 or less words.",
       }, { role: "user", content: text }],
     });
     return completion;
@@ -79,6 +79,54 @@ exports.message = async (messages, sys) => {
   } catch (err) {
     return err;
   }
+};
+
+exports.transcribe = async (token, formData) => {
+  let response = await axios({
+    url: "https://api.openai.com/v1/audio/transcriptions",
+    method: "POST",
+    data: formData,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+    },
+  });
+  return response;
+};
+
+exports.getRapidAudioUrl = async (id) => {
+  const headers = {
+    "content-type": "application/json",
+    "x-rapidapi-host": "large-text-to-speech.p.rapidapi.com",
+    "x-rapidapi-key": process.env.RAPID_API_KEY,
+  };
+
+  let response = await axios({
+    url: "https://large-text-to-speech.p.rapidapi.com/tts",
+    method: 'get',
+    headers,
+    params: { id },
+  });
+
+  return response;
+};
+
+exports.rapidTextToSpeech = async (text) => {
+  const headers = {
+    "content-type": "application/json",
+    "x-rapidapi-host": "large-text-to-speech.p.rapidapi.com",
+    "x-rapidapi-key": process.env.RAPID_API_KEY,
+  };
+
+  let response = await axios({
+    url: "https://large-text-to-speech.p.rapidapi.com/tts",
+    method: "POST",
+    headers: headers,
+    data: { text },
+  });
+  const id = response.data.id;
+  const eta = response.data.eta;
+  return { id, eta };
 };
 
 exports.translate = async (text, src_lang, tgt_lang) => {
